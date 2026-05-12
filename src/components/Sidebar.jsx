@@ -10,30 +10,29 @@ const Sidebar = ({user, setUser, friendsList,serverList ,activeChat, setActiveCh
   };
 
   return (
-    <div className="relative flex bg-[#202225] w-120 ">
+    <div className={`w-120  relative flex bg-[#202225]   max-sm:w-full ${activeChat ? "max-sm:hidden ":""} `}>
 
       
       <FloatingUserMenu user={user} setUser={setUser}/>
 
       {/* Server selector */}
       
-      <div className="flex flex-col gap-4  w-16 bg-[#2F3136] pt-3 px-3">
+      <div className={` flex flex-col gap-4  w-16 bg-[#2F3136] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat? "":""}`}>
         <div className=" h-10 w-10">
           <img src={assets.Nexus} className="" alt="" />
         </div>
 
+
         {serverList.map((data,index)=>(
-          <div key={index} className="">
+          <div key={index} className={ ` max-sm:hidden ${activeChat? "":""}`}>
             <img src={data.icon} alt="" className="rounded-xl hover:cursor-pointer " />
           </div>
         ))}
-
-
-
-       
       </div>
 
-      <div className="  border-2 w-full border-x-[#42464D] h-full flex flex-col items-center pt-3 px-3">
+
+
+      <div className="  w-full  h-full flex flex-col items-center pt-3 px-3 max-sm:w-9/10">
         {/* Logo */}
         {/* <div className="text-2xl border  rounded-xl px-2 py-1 w-full flex gap-2">
         <img src={assets.Nexus} className="h-8   " alt="" />
@@ -41,10 +40,10 @@ const Sidebar = ({user, setUser, friendsList,serverList ,activeChat, setActiveCh
       </div> */}
 
         {/* Search Box */}
-        <div className="w-full">
+        <div className="w-full  flex justify-end">
           <input
             type="text"
-            className="border w-full rounded-lg  focus:outline-0 h-10 p-2 text-xl "
+            className="max-sm:w-5/7 border w-full rounded-lg  focus:outline-0 h-10 p-2 text-xl "
             placeholder="Search"
           />
         </div>
@@ -65,7 +64,7 @@ const Sidebar = ({user, setUser, friendsList,serverList ,activeChat, setActiveCh
               >
                 <img src={data.avtar} alt="t" className="h-8 " />
                 <h1
-                  className={` col-span-2   text-2xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl `}
+                  className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
                 >
                   {data.username}
                 </h1>

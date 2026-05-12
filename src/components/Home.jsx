@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 import ChatBox from './ChatBox';
 import Header from './Header';
 import ActiveFriends from "./ActiveFriends"
 const Home = () => {
-  const [activeChat,setActiveChat] = useState()
-
+  const [activeChat,setActiveChat] = useState("")
+  
   const [user,setUser] = useState({
     avtar : "https://api.dicebear.com/7.x/bottts/svg?seed=Ben",
     username : "Ben",
@@ -57,15 +57,17 @@ const serverList = [
 
 
   return (
-    <div className='h-screen  flex '>
+    <div className='h-screen w-full flex '>
 
       <Sidebar user={user} setUser={setUser} friendsList={friendsList} serverList={serverList} activeChat={activeChat} setActiveChat={setActiveChat}/>
-      <div className='flex flex-col  w-full '>
+      
+      <div className={`flex flex-col  w-full ${activeChat?"":"max-sm:hidden"} `}>
 
-      <Header activeChat={activeChat}/>
-      {activeChat? <ChatBox activeChat={activeChat} /> :  <div className='text-3xl flex justify-center text-gray-500 pt-3'>Start a Conversation...</div>}
+      <Header activeChat={activeChat} setActiveChat={setActiveChat}/>
+      <ChatBox activeChat={activeChat} />  
       </div>
-      <ActiveFriends/>
+      <ActiveFriends activeChat={activeChat} />
+      
 
 
       

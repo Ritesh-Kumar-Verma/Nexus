@@ -1,10 +1,20 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-
-const Header = ({activeChat}) => {
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+const Header = ({activeChat,setActiveChat}) => {
+  const handleBack=()=>{
+    setActiveChat(prev=>"")
+    
+  }
   return (
-    <div className='flex h-16 w-full border-b border-[#42464D] justify-center items-center'>
+    <div className={`${activeChat ? "" :"max-sm:hidden"}  flex  h-16 w-full border-b border-[#42464D] gap-2 items-center`}>
         
-        <div className='text-xl'>{activeChat? activeChat : "Friends"}</div>
+        {activeChat && <FontAwesomeIcon icon={faAngleLeft} className={`  ml-2 text-2xl py-2 px-1 rounded-lg hover:bg-gray-600 hover:cursor-pointer`} style={{color: "#D1D5DB"}}
+         onClick={handleBack}
+        />}
+
+
+        <div className='text-xl '>{activeChat? activeChat : ""}</div>
         
         </div>
   )
