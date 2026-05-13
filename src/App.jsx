@@ -9,12 +9,15 @@ import Login from "./components/Login.jsx";
 import NotFoundPage from "./components/NotFoundPage.jsx";
 
 const App = () => {
+
+  
  
  const requireAuth = () => {
    const token = localStorage.getItem("jwttoken");
    if (!token) {
      throw redirect("/login");
    }
+   return null
  };
  
  const router = createBrowserRouter([

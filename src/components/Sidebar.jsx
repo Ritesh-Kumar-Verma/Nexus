@@ -1,36 +1,74 @@
-import React from "react";
+import React, { useState } from "react";
 import assets from "../assets/assets";
-import FloatingUserMenu from './FloatingUserMenu';
-
-
-
-const Sidebar = ({user, setUser, friendsList,serverList ,activeChat, setActiveChat }) => {
+import FloatingUserMenu from "./FloatingUserMenu";
+import { friendsAPI } from "../api/service";
+import { toast } from "react-toastify";
+import Toast from "./Toast"
+const Sidebar = ({
+  user,
+  setUser,
+  friendsList,
+  serverList,
+  activeChat,
+  setActiveChat,
+}) => {
   const handleChat = (username) => {
     setActiveChat(username);
   };
+  const [isSearchFocused, setIsSearchFocused] = useState();
+  const [searchList, setSearchList] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearchKeydown =async (event)=>{
+    if(event.key=="Enter"){
+      try{
+        const res = await friendsAPI.search(searchKeyword)
+        console.log(res.data)
+        setSearchList(()=>res.data)
+
+      }catch(error){
+        console.log(error)
+      }
+    }
+  }
+  const handleSendRequest = async (receiver)=>{
+    try{
+
+      const res =await friendsAPI.sendRequest(receiver)
+      toast.success(res.data)
+
+    }catch(error){
+      console.log(error)
+    }
+  }
+
 
   return (
-    <div className={`w-120  relative flex bg-[#202225]   max-sm:w-full ${activeChat ? "max-sm:hidden ":""} `}>
-
-      
-      <FloatingUserMenu user={user} setUser={setUser}/>
+    <div
+      className={`w-120  relative flex bg-[#202225]   max-sm:w-full ${activeChat ? "max-sm:hidden " : ""} `}
+    >
+      <Toast/>
+      <FloatingUserMenu user={user} setUser={setUser} />
 
       {/* Server selector */}
-      
-      <div className={` flex flex-col gap-4  w-16 bg-[#2F3136] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat? "":""}`}>
+
+      <div
+        className={` flex flex-col gap-4  w-16 bg-[#2F3136] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat ? "" : ""}`}
+      >
         <div className=" h-10 w-10">
           <img src={assets.Nexus} className="" alt="" />
         </div>
 
-
-        {serverList.map((data,index)=>(
-          <div key={index} className={ ` max-sm:hidden ${activeChat? "":""}`}>
-            <img src={data.icon} alt="" className="rounded-xl hover:cursor-pointer " />
+        {serverList.map((data, index) => (
+          <div key={index} className={` max-sm:hidden ${activeChat ? "" : ""}`}>
+            <img
+              src={data.icon}
+              alt=""
+              className="rounded-xl hover:cursor-pointer "
+            />
           </div>
         ))}
       </div>
-
-
 
       <div className="  w-full  h-full flex flex-col items-center pt-3 px-3 max-sm:w-9/10">
         {/* Logo */}
@@ -40,17 +78,63 @@ const Sidebar = ({user, setUser, friendsList,serverList ,activeChat, setActiveCh
       </div> */}
 
         {/* Search Box */}
-        <div className="w-full  flex justify-end">
+        <div className=" flex items-center border border-gray-400 rounded-md  relative  hover:border-white ">
+          <img src={assets.search} alt="" />
           <input
             type="text"
-            className="max-sm:w-5/7 border w-full rounded-lg  focus:outline-0 h-10 p-2 text-xl "
-            placeholder="Search"
+            placeholder="Search..."
+            className=" max-sm:w-5/7  w-full rounded-lg  focus:outline-0 h-10 p-2 text-xl text-[#DCDDDE] placeholder:text-[#DCDDDE] "
+            onFocus={() => setIsSearchFocused(true)}
+            onChange={(e) => setSearchKeyword(e.target.value.trim())}
+            onKeyDown={handleSearchKeydown}
+            value={searchKeyword}
           />
+          <button
+            className="text-gray-400 font-bold hover:bg-gray-600   rounded-full mr-1 flex items-center justify-center"
+            onClick={() => {
+              setIsSearchFocused(false);
+              setSearchKeyword("");
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          {isSearchFocused && searchList && (
+            <div className="absolute top-[105%] left-0 bg-[#393C43] rounded-b-xl w-full">
+              {searchList.map((data, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between border-b border-gray-400 text-black p-1.5 last:border-b-0 last:rounded-b-lg hover:bg-[#94b7f5]"
+                >
+                  <div>{data}</div>
+                  <button
+                    className="text-[0.7rem] px-1.5 py-0.5 border border-transparent cursor-pointer rounded-lg font-bold bg-[#A3E635] hover:border-blue-700"
+                    onClick={() => handleSendRequest(data)}
+                  >
+                    Send Request
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Friends */}
         <div className="  border-[#42464D]  flex flex-col gap-2 w-full  ">
-          <h1 className="h-10    text-lg flex justify-between items-center  hover:text-white ">
+          <h1 className="h-10    text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
             Recent <span className="cursor-pointer">+</span>
           </h1>
 

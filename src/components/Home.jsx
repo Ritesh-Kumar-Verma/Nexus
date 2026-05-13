@@ -3,6 +3,8 @@ import Sidebar from './Sidebar'
 import ChatBox from './ChatBox';
 import Header from './Header';
 import ActiveFriends from "./ActiveFriends"
+import { friendsAPI } from '../api/service';
+import { toast } from 'react-toastify';
 const Home = () => {
   const [activeChat,setActiveChat] = useState("")
   
@@ -14,24 +16,27 @@ const Home = () => {
     deafened : true
   })
 
-  const friendsList = [
-  {
-    avtar: "https://api.dicebear.com/7.x/bottts/svg?seed=Ben",
-    username: "Ben"
-  },
-  {
-    avtar: "https://api.dicebear.com/7.x/bottts/svg?seed=Gwen",
-    username: "Gwen"
-  },
-  {
-    avtar: "https://api.dicebear.com/7.x/bottts/svg?seed=Max",
-    username: "Max"
-  },
-  {
-    avtar: "https://api.dicebear.com/7.x/bottts/svg?seed=Doraemon",
-    username: "Doraemon"
+const [friendsList , setFriendsList] = useState([])
+
+const getFriendsRequest = async ()=>{
+
+  try{
+
+    const res = await friendsAPI.getRequest()
+  }catch(error){
+    console.log(error)
   }
-];
+
+  
+
+}
+//to add api request to run on homepage load
+useEffect(()=>{
+
+  
+
+},[])
+
 const serverList = [
   {
     name: "Gaming Collective",
