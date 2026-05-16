@@ -21,6 +21,7 @@ const App = () => {
  };
  
  const router = createBrowserRouter([
+  
    {
      path: "/login",
      element: <Login />,
@@ -42,7 +43,7 @@ const App = () => {
        },
      ],
    },
- ]);
+ ],{basename:"/Nexus"});
  
   return (
       <RouterProvider router={router}/>
