@@ -85,7 +85,7 @@ const Sidebar = ({
 
   return (
     <div
-      className={`w-120  relative flex bg-[#202225]   max-sm:w-full ${activeChat ? "max-sm:hidden " : ""} `}
+      className={` bg-[#34203B] w-120  relative flex  max-sm:w-full ${activeChat ? "max-sm:hidden " : ""} `}
     >
       <Toast/>
       <FloatingUserMenu user={user} setUser={setUser} />
@@ -93,7 +93,7 @@ const Sidebar = ({
       {/* Server selector */}
 
       <div
-        className={` flex flex-col gap-4  w-16 bg-[#2F3136] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat ? "" : ""}`}
+        className={` flex flex-col gap-4  w-16 bg-[#1a1525] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat ? "" : ""}`}
       >
         <div className=" h-10 w-10">
           <img src={assets.Nexus} className="" alt="" />
@@ -112,7 +112,7 @@ const Sidebar = ({
 
 
 
-      <div className="  w-full  h-full flex flex-col items-center pt-3 px-3 max-sm:w-9/10">
+      <div className="  w-full  h-full flex flex-col  items-center pt-3 px-3 max-sm:w-9/10">
         {/* Logo */}
         {/* <div className="text-2xl border  rounded-xl px-2 py-1 w-full flex gap-2">
         <img src={assets.Nexus} className="h-8   " alt="" />
@@ -120,12 +120,12 @@ const Sidebar = ({
       </div> */}
 
         {/* Search Box */}
-        <div className=" flex items-center border border-gray-400 rounded-md  relative  hover:border-white ">
+        <div className=" flex items-center border rounded-md border-[#4A3153] relative  bg-[#1A1A24] shadow-lg ">
           <img src={assets.search} alt="" />
           <input
             type="text"
             placeholder="Search..."
-            className=" max-sm:w-5/7  w-full rounded-lg  focus:outline-0 h-10 p-2 text-xl text-[#DCDDDE] placeholder:text-[#DCDDDE] "
+            className=" max-sm:w-5/7  w-full rounded-lg  focus:outline-0 h-8 p-2 text-xl  text-[#DCDDDE] placeholder:text-[#DCDDDE] "
             onFocus={() => setIsSearchFocused(true)}
             onChange={(e) => setSearchKeyword(e.target.value.trim())}
             onKeyDown={handleSearchKeydown}
@@ -192,7 +192,7 @@ const Sidebar = ({
               <div
                 onClick={() => handleChat(data)}
                 key={index}
-                className={`flex h-10 gap-2 items-center hover:bg-[#84CC16] rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#A3E635]" : ""} `}
+                className={`flex h-10 gap-2 items-center hover:bg-[#FFFFFF1A] rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#00A3C4]" : ""} `}
               >
                 <img src={data.avtar ? data.avtar : `https://ui-avatars.com/api/?name=${data.username}&background=random&color=fff&rounded=true`} alt="" className="h-8 " />
                 <h1

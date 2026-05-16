@@ -119,7 +119,7 @@ const ChatBox = ({ currentUser, activeChat }) => {
   };
 
   return (
-    <div className={` flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
+    <div className={`bg-[#24283B] flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
       {
         chatLoading && <Loading/>
       }
@@ -133,21 +133,24 @@ const ChatBox = ({ currentUser, activeChat }) => {
             : activeChat.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat.username}`;
 
           return (
-            <div key={index} className={`flex h-auto items-start gap-3 mt-4 px-2 ${msg.senderId === currentUser.id ? "justify-end":""}`}>
+            <div key={index} className={`flex h-auto gap-3 mt-4 px-2  ${msg.senderId === currentUser.id ? "justify-end ":""}`}>
+
+            <div  className={`flex rounded-lg p-2  ${msg.senderId === currentUser.id ? "justify-end bg-[#4A3153]":"bg-[#2F354D]"}`}>
               <img src={displayIcon} alt="avatar" className="h-10 rounded-full" />
               <div className="flex flex-col">
                 <div className="text-[#DCDDDE] font-bold text-md">
                   {displayName}{" "}
-                  <span className="text-[#8E9297] text-sm ml-1">{formatTime(msg.timeStamp)}</span>
+                  <span className="text-[#9CA3AF] text-sm ml-1">{formatTime(msg.timeStamp)}</span>
                 </div>
                 <div className=" text-[#DCDDDE] break-words">{msg.content}</div>
               </div>
+            </div>
             </div>
           );
         })}
       </div>
 
-      <div className="flex items-center bg-[#383A40] rounded-xl px-2 py-1 mx-4 mb-4 mt-2">
+      <div className="flex items-center bg-[#1A1C29] rounded-xl px-2 py-1 mx-4 mb-4 mt-2">
         <input
           type="text"
           value={messageInput}
@@ -159,7 +162,7 @@ const ChatBox = ({ currentUser, activeChat }) => {
 
         <button 
           onClick={sendMessage}
-          className="px-3 text-[#B5BAC1] hover:text-[#FFFFFF] transition-colors cursor-pointer"
+          className="px-3 text-[#00A3C4] hover:text-[#33B5D1] transition-colors cursor-pointer"
         >
           <FontAwesomeIcon icon={faPaperPlane} className="text-lg" />
         </button>

@@ -7,10 +7,10 @@ export default defineConfig({
   base:'/Nexus/',
   plugins: [react(),tailwindcss()],
 
-  // server : {
-  //   host: true,
-  //   port:5173
-  // },
+  server : {
+    host: true,
+    port:5173
+  },
   define:{
     global :'window'
   }
