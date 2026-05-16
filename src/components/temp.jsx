@@ -3,69 +3,39 @@ import React, { useState, useEffect, useRef } from "react";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { chatAPI } from "../api/service";
 
 const ChatBox = ({ currentUser, activeChat }) => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const stompClientRef = useRef(null);
-  const [loading, setLoading] = useState(true)
-
-  const apiURL = import.meta.env.VITE_API_URL
-
-  useEffect(()=>{
-
-    handleActiveChat()
-
-  },[activeChat])
-
-  const handleActiveChat = async ()=>{
-
-    try{
-
-      const res =await chatAPI.getChat(currentUser.id,activeChat.id)
-      // console.log(res.data)
-      setMessages(()=>res.data)
-
-    }catch(error){
-      console.log(error)
-    }
-
-  }
 
   useEffect(() => {
+    // Prevent connecting if a user hasn't been selected yet
     if (!currentUser?.id || !activeChat?.id) return;
-
-    if (stompClientRef.current?.active) {
-      return;
-    }
+    // console.log("Current User:", currentUser, "Active Chat:", activeChat);
 
     const client = new Client({
-      webSocketFactory: () => new SockJS(`${apiURL}/ws`),
-      connectHeaders: {
-        Authorization: `Bearer ${localStorage.getItem('jwttoken')}`
+      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      connectHeaders : {
+
+        Authorization : `Bearer ${localStorage.getItem('jwttoken')}`
+
       },
-      // debug: (str) => console.log("STOMP DEBUG:", str),
-      
+
+      debug:(str)=>console.log("STOMP DEBUG:",str),
       onConnect: () => {
-        console.log('Connected to WebSocket Successfully!');
-        
-        const mailbox = `/queue/chat/${currentUser.id}`;
-        console.log("Subscribing directly to:", mailbox);
+        console.log('Connected to WebSocket');
+        const mailbox = `/user/queue/messages`;
+        // const mailbox = `/user/${currentUser.id}/queue/messages`;
         
         client.subscribe(mailbox, (message) => {
-          const incomingMessage = JSON.parse(message.body);
           
-          if (incomingMessage.senderId === activeChat.id) {
-             setMessages((prev) => [...prev, incomingMessage]);
-          } else {
-             console.log("New background message from:", incomingMessage.senderId);
-             
-          }
+          const incomingMessage = JSON.parse(message.body);
+          setMessages((prev) => [...prev, incomingMessage]);
         });
       },
       onStompError: (frame) => {
-        console.error('Broker error:', frame.headers['message']);
+        console.error('Broker reported error: ' + frame.headers['message']);
       },
     });
 
@@ -79,16 +49,8 @@ const ChatBox = ({ currentUser, activeChat }) => {
     };
   }, [currentUser?.id, activeChat?.id]);
 
-  useEffect(()=>{
-
-    console.log("Messages=",messages)
-
-  },[messages])
-
-
-
-  
   const sendMessage = () => {
+    // console.log(messageInput)
     if (messageInput.trim() !== '' && stompClientRef.current?.connected) {
       const chatMessage = {
         senderId: currentUser.id,
@@ -102,7 +64,6 @@ const ChatBox = ({ currentUser, activeChat }) => {
         body: JSON.stringify(chatMessage)
       });
 
-      // Add our own message to the screen immediately
       setMessages((prev) => [...prev, chatMessage]);
       setMessageInput('');
     }
@@ -114,25 +75,35 @@ const ChatBox = ({ currentUser, activeChat }) => {
   };
 
   return (
-    <div className={`flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
+    <div className={`flex flex-col h-full p-2 gap-2 ${activeChat ? "" : "hidden"}`}>
       
+      {/* 
+        UI UPDATE: Changed to flex-1 and added overflow-y-auto 
+        so older messages scroll up instead of breaking the layout 
+      */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {messages.map((msg, index) => {
+          // Check if this message was sent by us or the other person
           const isMe = msg.senderId === currentUser.id;
+          
+          // Map to your UI fields dynamically
           const displayName = isMe ? currentUser.username : activeChat.username;
+          
+          // Fallback to Dicebear avatars if the user doesn't have an icon saved in the DB
           const displayIcon = isMe 
             ? currentUser.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.username}` 
             : activeChat.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat.username}`;
 
           return (
-            <div key={index} className={`flex h-auto items-start gap-3 mt-4 px-2 ${msg.senderId === currentUser.id ? "justify-end":""}`}>
+            // UI UPDATE: Changed h-16 to h-auto and items-center to items-start for multi-line messages
+            <div key={index} className="flex h-auto items-start gap-3 mt-4 px-2">
               <img src={displayIcon} alt="avatar" className="h-10 rounded-full" />
               <div className="flex flex-col">
                 <div className="text-[#DCDDDE] font-bold text-md">
                   {displayName}{" "}
                   <span className="text-[#8E9297] text-sm ml-1">{formatTime(msg.timeStamp)}</span>
                 </div>
-                <div className=" text-[#DCDDDE] break-words">{msg.content}</div>
+                <div className="text-[#DCDDDE] break-words">{msg.content}</div>
               </div>
             </div>
           );
@@ -144,7 +115,7 @@ const ChatBox = ({ currentUser, activeChat }) => {
           type="text"
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          onKeyDown={(e) => e.key === 'Enter' && sendMessage()} // UI UPDATE: Press Enter to send
           placeholder={`Message @${activeChat?.username || "User"}`}
           className="bg-transparent flex-1 focus:outline-none text-[#DBDEE1] p-3 placeholder:text-[#949BA4]"
         />
@@ -156,13 +127,8 @@ const ChatBox = ({ currentUser, activeChat }) => {
           <FontAwesomeIcon icon={faPaperPlane} className="text-lg" />
         </button>
       </div>
-
-
-
     </div>
   );
 };
 
 export default ChatBox;
-
-

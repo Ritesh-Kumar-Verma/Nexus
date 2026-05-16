@@ -3,10 +3,11 @@ import Sidebar from './Sidebar'
 import ChatBox from './ChatBox';
 import Header from './Header';
 import ActiveFriends from "./ActiveFriends"
-import { friendsAPI } from '../api/service';
+import { authAPI, friendsAPI } from '../api/service';
 import { toast } from 'react-toastify';
 const Home = () => {
-  const [activeChat,setActiveChat] = useState("")
+  const [activeChat,setActiveChat] = useState({})
+  const [currentUser , setCurrentUser] = useState("")
   
   const [user,setUser] = useState({
     avtar : "https://api.dicebear.com/7.x/bottts/svg?seed=Ben",
@@ -16,7 +17,22 @@ const Home = () => {
     deafened : true
   })
 
-const [friendsList , setFriendsList] = useState([])
+  useEffect(()=>{
+
+    handleGetProfile()
+
+  },[])
+
+  const handleGetProfile=async()=>{
+    try{
+const res =await authAPI.getProfile()
+// console.log("res=",res)
+setCurrentUser(()=>res.data)
+    }catch(error){
+
+      console.log(error)
+    }
+  }
 
 const getFriendsRequest = async ()=>{
 
@@ -30,6 +46,7 @@ const getFriendsRequest = async ()=>{
   
 
 }
+
 //to add api request to run on homepage load
 useEffect(()=>{
 
@@ -64,12 +81,12 @@ const serverList = [
   return (
     <div className='h-screen w-full flex '>
 
-      <Sidebar user={user} setUser={setUser} friendsList={friendsList} serverList={serverList} activeChat={activeChat} setActiveChat={setActiveChat}/>
+      <Sidebar user={user} setUser={setUser} serverList={serverList} activeChat={activeChat} setActiveChat={setActiveChat}/>
       
       <div className={`flex flex-col  w-full ${activeChat?"":"max-sm:hidden"} `}>
 
-      <Header activeChat={activeChat} setActiveChat={setActiveChat}/>
-      <ChatBox activeChat={activeChat} />  
+      <Header currentUser={currentUser} activeChat={activeChat} setActiveChat={setActiveChat}/>
+      <ChatBox currentUser={currentUser}  activeChat={activeChat} />  
       </div>
       <ActiveFriends activeChat={activeChat} />
       

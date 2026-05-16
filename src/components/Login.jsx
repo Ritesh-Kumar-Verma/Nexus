@@ -47,12 +47,20 @@ const Login = () => {
 
     try {
       const data = await authAPI.signup(userLoginInfo);
+
+      
+      
       localStorage.setItem("jwttoken", data.data);
-
-
-      navigate("/");
-    } catch (errorMessage) {
-      toast.error(errorMessage);
+      navigate("/home");
+      
+    } catch (error) {
+      if(error.response.status == 409){
+        toast.error("Username Taken");
+      }
+      else{
+        console.log(error.response)
+      }
+      
     }
   };
 

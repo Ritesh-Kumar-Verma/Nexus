@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import assets from "../assets/assets";
 import FloatingUserMenu from "./FloatingUserMenu";
 import { friendsAPI } from "../api/service";
@@ -7,23 +7,26 @@ import Toast from "./Toast"
 const Sidebar = ({
   user,
   setUser,
-  friendsList,
   serverList,
   activeChat,
   setActiveChat,
 }) => {
-  const handleChat = (username) => {
-    setActiveChat(username);
+  const handleChat = (user) => {
+    // console.log("user=",user)
+    setActiveChat(()=>user);
   };
   const [isSearchFocused, setIsSearchFocused] = useState();
   const [searchList, setSearchList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [friendRequestList,setFriendRequestList] = useState([])
+  const [friendsList , setFriendsList] = useState([])
+
 
   const handleSearchKeydown =async (event)=>{
     if(event.key=="Enter"){
       try{
         const res = await friendsAPI.search(searchKeyword)
-        console.log(res.data)
+        // console.log(res.data)
         setSearchList(()=>res.data)
 
       }catch(error){
@@ -31,11 +34,48 @@ const Sidebar = ({
       }
     }
   }
+  useEffect(()=>{
+    handleGetFriendRequest()
+
+    handleGetFriendList()
+  },[activeChat])
+
+  const handleGetFriendList = async ()=>{
+    try{
+      const res = await friendsAPI.getFriendList();
+      // console.log("Friends:====",res.data)
+      setFriendsList(()=>res.data)
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+
   const handleSendRequest = async (receiver)=>{
     try{
 
       const res =await friendsAPI.sendRequest(receiver)
       toast.success(res.data)
+
+    }catch(error){
+      console.log(error)
+    }
+  }
+  const handleGetFriendRequest=async() =>{
+
+    try{
+      const res =await friendsAPI.getRequest()
+      setFriendRequestList(prev=>res.data)
+    }catch(error){
+      console.log(error)
+    }
+
+  }
+  const handleAcceptRequest= async(username)=>{
+    try{
+
+      const response = await friendsAPI.acceptFriendRequest(username)
+      console.log(response)
 
     }catch(error){
       console.log(error)
@@ -69,6 +109,8 @@ const Sidebar = ({
           </div>
         ))}
       </div>
+
+
 
       <div className="  w-full  h-full flex flex-col items-center pt-3 px-3 max-sm:w-9/10">
         {/* Logo */}
@@ -132,6 +174,12 @@ const Sidebar = ({
           )}
         </div>
 
+
+
+      
+        
+
+
         {/* Friends */}
         <div className="  border-[#42464D]  flex flex-col gap-2 w-full  ">
           <h1 className="h-10    text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
@@ -142,11 +190,11 @@ const Sidebar = ({
           <div className=" flex flex-col gap-2">
             {friendsList.map((data, index) => (
               <div
-                onClick={() => handleChat(data.username)}
+                onClick={() => handleChat(data)}
                 key={index}
-                className={`flex h-10 gap-2 items-center hover:bg-[#84CC16] rounded-lg px-2 ${activeChat === data.username ? "bg-[#A3E635]" : ""} `}
+                className={`flex h-10 gap-2 items-center hover:bg-[#84CC16] rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#A3E635]" : ""} `}
               >
-                <img src={data.avtar} alt="t" className="h-8 " />
+                <img src={data.avtar ? data.avtar : `https://ui-avatars.com/api/?name=${data.username}&background=random&color=fff&rounded=true`} alt="" className="h-8 " />
                 <h1
                   className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
                 >
@@ -155,8 +203,45 @@ const Sidebar = ({
               </div>
             ))}
           </div>
+
+          {/* Friend Request */}
+          <div>
+           <h1 className="h-10 text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
+            Pending Requests
+          </h1>
+
+          <div className=" flex flex-col gap-2">
+            {friendRequestList.map((data, index) => (
+              <div
+                key={index}
+                className={`flex justify-between  h-10 gap-2 items-center rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#A3E635]" : ""} `}
+              >
+                <div className="flex gap-2">
+
+                <img src={data.avtar} alt="t" className="h-8 rounded-full " />
+                <h1
+                  className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
+                  >
+                  {data.username}
+                </h1>
+                  </div>
+                <button className="text-white border bg-[#84CC16]  rounded-lg px-2 hover:cursor-pointer hover:bg-[#52810c]" onClick={()=>handleAcceptRequest(data.username)} >Accept</button>
+              </div>
+            ))}
+          </div>
+
+             
+ 
+
+          </div>
+
+
+
+
         </div>
       </div>
+
+
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const apiURL=import.meta.env.VITE_API_URL
-
 const apiClient=axios.create({
-    baseURL: apiURL
+    baseURL: apiURL+'/api'
 })
 apiClient.interceptors.request.use((config)=>{
     const token = localStorage.getItem("jwttoken")
@@ -12,14 +11,26 @@ apiClient.interceptors.request.use((config)=>{
     }
     return config
 },(error)=>{
+    // window.location.href("/login")
     toast.error("Missing JWTtoken")
 })
-
+apiClient.interceptors.response.use((response)=>{
+    return response
+},(error)=>{
+    if(error.response && error.response.status == 401 || error.response.status == 403){
+        // localStorage.removeItem("jwttoken")
+        // window.location.href="/login"
+    }
+    return Promise.reject(error)
+})
 export const authAPI = {
     signup:({username,password,email})=>
         apiClient.post('/auth/register',{username,password,email}),
     login : ({username,password})=>
-        apiClient.post('/auth/login',{username,password})
+        apiClient.post('/auth/login',{username,password}),
+    getProfile: ()=>
+        apiClient.get('/auth/getprofile')
+    
 }
 
 export const friendsAPI = {
@@ -36,9 +47,28 @@ export const friendsAPI = {
             }
         }),
     getRequest : ()=>
-        apiClient.get('/getfriendrequest')
+        apiClient.get('/getfriendrequest'),
+
+    
+    acceptFriendRequest:(username)=>
+        apiClient.post('/acceptfriendrequest',null,{
+            params:{
+                sender : username
+            }
+        }),
+    getFriendList : ()=>
+        apiClient.get('/getfriends')
     
 } 
 
+export const chatAPI = {
+    getChat:(currentUserId,activeChatId)=>
+        apiClient.get('/getchat',{
+            params:{
+                CurrentUserId : currentUserId,
+                ActiveChatId : activeChatId
+            }
+        })
+}
 
 
