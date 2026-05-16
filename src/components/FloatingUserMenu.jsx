@@ -7,8 +7,10 @@ import {
   faHeadphones, 
   faDeafness 
 } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const FloatingUserMenu = ({user,setUser}) => {
+    const navigate=useNavigate()
     const handleMute=()=>{
         setUser(prev=>({
             ...prev,
@@ -22,9 +24,12 @@ const FloatingUserMenu = ({user,setUser}) => {
         }))
     }
 
-    //to be created later
+    //to be created later , Temporarily adding logout feature to it but will have a seprate button later
     const handleSettings = ()=>{
         //settings
+        localStorage.removeItem("jwttoken")
+        navigate("/login")
+        
     }
   return (
     <div className="absolute left-0 bottom-0 rounded-lg  flex  w-[92%] m-2 items-center justify-between bg-[#1c1d20] px-2 py-2 gap-2">

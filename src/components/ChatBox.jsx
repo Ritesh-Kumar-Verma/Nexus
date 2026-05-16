@@ -4,12 +4,13 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { chatAPI } from "../api/service";
+import Loading from "./Loading";
 
 const ChatBox = ({ currentUser, activeChat }) => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const stompClientRef = useRef(null);
-  const [loading, setLoading] = useState(true)
+  const [chatLoading, setChatLoading] = useState(false)
 
   const apiURL = import.meta.env.VITE_API_URL
 
@@ -23,9 +24,12 @@ const ChatBox = ({ currentUser, activeChat }) => {
 
     try{
 
+      setChatLoading(true)
       const res =await chatAPI.getChat(currentUser.id,activeChat.id)
       // console.log(res.data)
+      
       setMessages(()=>res.data)
+      setChatLoading(false)
 
     }catch(error){
       console.log(error)
@@ -79,11 +83,11 @@ const ChatBox = ({ currentUser, activeChat }) => {
     };
   }, [currentUser?.id, activeChat?.id]);
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
-    console.log("Messages=",messages)
+  //   // console.log("Messages=",messages)
 
-  },[messages])
+  // },[messages])
 
 
 
@@ -115,6 +119,9 @@ const ChatBox = ({ currentUser, activeChat }) => {
 
   return (
     <div className={`flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
+      {
+        chatLoading && <Loading/>
+      }
       
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {messages.map((msg, index) => {
