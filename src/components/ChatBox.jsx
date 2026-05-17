@@ -127,10 +127,10 @@ const ChatBox = ({ currentUser, activeChat }) => {
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {messages.map((msg, index) => {
           const isMe = msg.senderId === currentUser.id;
-          const displayName = isMe ? currentUser.username : activeChat.username;
+          const displayName = isMe ? currentUser.username : activeChat?.username;
           const displayIcon = isMe 
             ? currentUser.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.username}` 
-            : activeChat.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat.username}`;
+            : activeChat?.icon || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat?.username}`;
 
           return (
             <div key={index} className={`flex h-auto gap-3 mt-4 px-2  ${msg.senderId === currentUser.id ? "justify-end ":""}`}>

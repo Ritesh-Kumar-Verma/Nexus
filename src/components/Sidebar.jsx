@@ -192,7 +192,7 @@ const Sidebar = ({
               <div
                 onClick={() => handleChat(data)}
                 key={index}
-                className={`flex h-10 gap-2 items-center hover:bg-[#FFFFFF1A] rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#00A3C4]" : ""} `}
+                className={`flex h-10 gap-2 items-center hover:bg-[#FFFFFF1A] rounded-lg px-2 ${activeChat?.username === data.username ? "bg-[#00A3C4]" : ""} `}
               >
                 <img src={data.avtar ? data.avtar : `https://ui-avatars.com/api/?name=${data.username}&background=random&color=fff&rounded=true`} alt="" className="h-8 " />
                 <h1

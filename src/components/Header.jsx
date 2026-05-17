@@ -14,7 +14,7 @@ const Header = ({currentUser,activeChat,setActiveChat}) => {
 
 
 
-        <div className='text-xl text-white '>{activeChat.id ? activeChat.username : ""}</div>
+        <div className='text-xl text-white '>{activeChat && activeChat.id ? activeChat.username : ""}</div>
 
 
         <div className='bg-blue-400 border-2 text-white'>{currentUser.username}</div>
