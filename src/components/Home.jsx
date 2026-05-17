@@ -79,7 +79,7 @@ const serverList = [
 
 
   return (
-    <div className='h-screen w-full flex '>
+    <div className='h-screen w-full flex bg-[#24283B]'>
 
       <Sidebar user={user} setUser={setUser} serverList={serverList} activeChat={activeChat} setActiveChat={setActiveChat}/>
       
@@ -88,7 +88,7 @@ const serverList = [
       <Header currentUser={currentUser} activeChat={activeChat} setActiveChat={setActiveChat}/>
       <ChatBox currentUser={currentUser}  activeChat={activeChat} />  
       </div>
-      <ActiveFriends activeChat={activeChat} />
+      {/* <ActiveFriends activeChat={activeChat} /> */}
       
 
 
