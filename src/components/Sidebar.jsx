@@ -30,7 +30,7 @@ const Sidebar = ({ user, setUser, serverList, activeChat, setActiveChat }) => {
     handleGetFriendRequest();
 
     handleGetFriendList();
-  }, [activeChat]);
+  }, []);
 
   const handleGetFriendList = async () => {
     try {

@@ -6,37 +6,14 @@ import SockJS from 'sockjs-client';
 import { chatAPI } from "../api/service";
 import Loading from "./Loading";
 
-const ChatBox = ({ currentUser, activeChat,messages,setMessages }) => {
+const ChatBox = ({ currentUser, activeChat,messages,setMessages,chatLoading,setChatLoading }) => {
   
   const [messageInput, setMessageInput] = useState("");
   const stompClientRef = useRef(null);
-  const [chatLoading, setChatLoading] = useState(false)
 
   const apiURL = import.meta.env.VITE_API_URL
 
-  useEffect(()=>{
-
-    handleActiveChat()
-
-  },[activeChat])
-
-  const handleActiveChat = async ()=>{
-
-    try{
-
-      setChatLoading(true)
-      const res =await chatAPI.getChat(currentUser.id,activeChat.id)
-      // console.log(res.data)
-      
-      setMessages(()=>res.data)
-      setChatLoading(false)
-
-    }catch(error){
-      setChatLoading(false)
-      console.log(error)
-    }
-
-  }
+ 
 
   useEffect(() => {
     if (!currentUser?.id || !activeChat?.id) return;

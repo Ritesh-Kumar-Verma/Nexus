@@ -11,15 +11,15 @@ apiClient.interceptors.request.use((config)=>{
     }
     return config
 },(error)=>{
-    // window.location.href("/login")
+    window.location.href("/login")
     toast.error("Missing JWTtoken")
 })
 apiClient.interceptors.response.use((response)=>{
     return response
 },(error)=>{
     if(error.response && error.response.status == 401 || error.response.status == 403){
-        // localStorage.removeItem("jwttoken")
-        // window.location.href="/login"
+        localStorage.removeItem("jwttoken")
+        window.location.href="/login"
     }
     return Promise.reject(error)
 })
