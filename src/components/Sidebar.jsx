@@ -3,104 +3,93 @@ import assets from "../assets/assets";
 import FloatingUserMenu from "./FloatingUserMenu";
 import { friendsAPI } from "../api/service";
 import { toast } from "react-toastify";
-import Toast from "./Toast"
-const Sidebar = ({
-  user,
-  setUser,
-  serverList,
-  activeChat,
-  setActiveChat,
-}) => {
+import Toast from "./Toast";
+const Sidebar = ({ user, setUser, serverList, activeChat, setActiveChat }) => {
   const handleChat = (user) => {
     // console.log("user=",user)
-    setActiveChat(()=>user);
+    setActiveChat(() => user);
   };
   const [isSearchFocused, setIsSearchFocused] = useState();
   const [searchList, setSearchList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [friendRequestList,setFriendRequestList] = useState([])
-  const [friendsList , setFriendsList] = useState([])
+  const [friendRequestList, setFriendRequestList] = useState([]);
+  const [friendsList, setFriendsList] = useState([]);
 
-
-  const handleSearchKeydown =async (event)=>{
-    if(event.key=="Enter"){
-      try{
-        const res = await friendsAPI.search(searchKeyword)
+  const handleSearchKeydown = async (event) => {
+    if (event.key == "Enter") {
+      try {
+        const res = await friendsAPI.search(searchKeyword);
         // console.log(res.data)
-        setSearchList(()=>res.data)
-
-      }catch(error){
-        console.log(error)
+        setSearchList(() => res.data);
+      } catch (error) {
+        console.log(error);
       }
     }
-  }
-  useEffect(()=>{
-    handleGetFriendRequest()
+  };
+  useEffect(() => {
+    handleGetFriendRequest();
 
-    handleGetFriendList()
-  },[activeChat])
+    handleGetFriendList();
+  }, [activeChat]);
 
-  const handleGetFriendList = async ()=>{
-    try{
+  const handleGetFriendList = async () => {
+    try {
       const res = await friendsAPI.getFriendList();
       // console.log("Friends:====",res.data)
-      setFriendsList(()=>res.data)
-    }catch(error){
-      console.log(error)
+      setFriendsList(() => res.data);
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
-
-  const handleSendRequest = async (receiver)=>{
-    try{
-
-      const res =await friendsAPI.sendRequest(receiver)
-      toast.success(res.data)
-
-    }catch(error){
-      console.log(error)
+  const handleSendRequest = async (receiver) => {
+    try {
+      const res = await friendsAPI.sendRequest(receiver);
+      toast.success(res.data);
+    } catch (error) {
+      console.log(error);
     }
-  }
-  const handleGetFriendRequest=async() =>{
-
-    try{
-      const res =await friendsAPI.getRequest()
-      setFriendRequestList(prev=>res.data)
-    }catch(error){
-      console.log(error)
+  };
+  const handleGetFriendRequest = async () => {
+    try {
+      const res = await friendsAPI.getRequest();
+      setFriendRequestList((prev) => res.data);
+    } catch (error) {
+      console.log(error);
     }
-
-  }
-  const handleAcceptRequest= async(username)=>{
-    try{
-
-      const response = await friendsAPI.acceptFriendRequest(username)
-      console.log(response)
-
-    }catch(error){
-      console.log(error)
+  };
+  const handleAcceptRequest = async (username) => {
+    try {
+      const response = await friendsAPI.acceptFriendRequest(username);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
-  }
-
+  };
 
   return (
     <div
-      className={` bg-[#34203B] w-120  relative flex  max-sm:w-full ${activeChat ? "max-sm:hidden " : ""} `}
+      className={` bg-transparent w-80 shrink-0  relative flex  max-sm:w-full  ${activeChat?.id ? "max-sm:hidden " : ""} 
+       glass-sidebar
+      `}
     >
-      <Toast/>
+      <Toast />
       <FloatingUserMenu user={user} setUser={setUser} />
 
       {/* Server selector */}
 
       <div
-        className={` flex flex-col gap-4  w-16 bg-[#1a1525] pt-3 px-3 max-sm:absolute max-sm:bg-transparent ${activeChat ? "" : ""}`}
+        className={` flex flex-col gap-4  w-16 bg-[#1a1525u] pt-3 px-3 max-sm:hidden border-r border-white/30 ${activeChat?.id ? "" : ""}`}
       >
         <div className=" h-10 w-10">
           <img src={assets.Nexus} className="" alt="" />
         </div>
 
         {serverList.map((data, index) => (
-          <div key={index} className={` max-sm:hidden ${activeChat ? "" : ""}`}>
+          <div
+            key={index}
+            className={` max-sm:hidden ${activeChat?.id ? "" : ""}`}
+          >
             <img
               src={data.icon}
               alt=""
@@ -110,9 +99,7 @@ const Sidebar = ({
         ))}
       </div>
 
-
-
-      <div className="  w-full  h-full flex flex-col  items-center pt-3 px-3 max-sm:w-9/10">
+      <div className="  w-full  h-full flex flex-col  items-center   max-sm:w-full max-sm:items-end ">
         {/* Logo */}
         {/* <div className="text-2xl border  rounded-xl px-2 py-1 w-full flex gap-2">
         <img src={assets.Nexus} className="h-8   " alt="" />
@@ -120,19 +107,26 @@ const Sidebar = ({
       </div> */}
 
         {/* Search Box */}
-        <div className=" flex items-center border rounded-md border-[#4A3153] relative  bg-[#1A1A24] shadow-lg ">
-          <img src={assets.search} alt="" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className=" max-sm:w-5/7  w-full rounded-lg  focus:outline-0 h-8 p-2 text-xl  text-[#DCDDDE] placeholder:text-[#DCDDDE] "
-            onFocus={() => setIsSearchFocused(true)}
-            onChange={(e) => setSearchKeyword(e.target.value.trim())}
-            onKeyDown={handleSearchKeydown}
-            value={searchKeyword}
-          />
+        <div className="h-15 flex items-center border-b border-white/30 px-3">
+
+        <div className=" flex items-center border rounded-md border-[#4A3153] relative max-sm:w-full bg-[#1A1A24]  justify-between ">
+          <div className="flex w-full justify-start items-center">
+            <div className=" h-10 w-10 sm:hidden">
+              <img src={assets.Nexus} className="" alt="" />
+            </div>
+            <img src={assets.search} alt="" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className=" max-sm:w-5/7  w-full rounded-lg  focus:outline-0 h-8 p-2 text-xl   text-[#DCDDDE] placeholder:text-[#DCDDDE] "
+              onFocus={() => setIsSearchFocused(true)}
+              onChange={(e) => setSearchKeyword(e.target.value.trim())}
+              onKeyDown={handleSearchKeydown}
+              value={searchKeyword}
+              />
+          </div>
           <button
-            className="text-gray-400 font-bold hover:bg-gray-600   rounded-full mr-1 flex items-center justify-center"
+            className="text-gray-400 font-bold hover:bg-gray-600 border   rounded-full mr-1 flex items-center justify-center"
             onClick={() => {
               setIsSearchFocused(false);
               setSearchKeyword("");
@@ -145,12 +139,12 @@ const Sidebar = ({
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
-            >
+              >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 d="M6 18L18 6M6 6l12 12"
-              />
+                />
             </svg>
           </button>
 
@@ -158,14 +152,14 @@ const Sidebar = ({
             <div className="absolute top-[105%] left-0 bg-[#393C43] rounded-b-xl w-full">
               {searchList.map((data, index) => (
                 <div
-                  key={index}
-                  className="flex justify-between border-b border-gray-400 text-black p-1.5 last:border-b-0 last:rounded-b-lg hover:bg-[#94b7f5]"
+                key={index}
+                className="flex justify-between border-b border-gray-400 text-black p-1.5 last:border-b-0 last:rounded-b-lg hover:bg-[#94b7f5]"
                 >
                   <div>{data}</div>
                   <button
                     className="text-[0.7rem] px-1.5 py-0.5 border border-transparent cursor-pointer rounded-lg font-bold bg-[#A3E635] hover:border-blue-700"
                     onClick={() => handleSendRequest(data)}
-                  >
+                    >
                     Send Request
                   </button>
                 </div>
@@ -173,28 +167,31 @@ const Sidebar = ({
             </div>
           )}
         </div>
-
-
-
-      
-        
-
+          </div>
 
         {/* Friends */}
-        <div className="  border-[#42464D]  flex flex-col gap-2 w-full  ">
+        <div className="px-3  border-[#42464D]  flex flex-col gap-2 w-full  ">
           <h1 className="h-10    text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
             Recent <span className="cursor-pointer">+</span>
           </h1>
 
           {/* Chat option */}
-          <div className=" flex flex-col gap-2">
+          <div className=" flex flex-col gap-2 hover:cursor-pointer">
             {friendsList.map((data, index) => (
               <div
                 onClick={() => handleChat(data)}
                 key={index}
-                className={`flex h-10 gap-2 items-center hover:bg-[#FFFFFF1A] rounded-lg px-2 ${activeChat?.username === data.username ? "bg-[#00A3C4]" : ""} `}
+                className={`flex h-10 gap-2 items-center  rounded-lg px-2 ${activeChat?.username === data.username ? "bg-[#00A3C4]" : "hover:bg-[#FFFFFF1A]"} `}
               >
-                <img src={data.avtar ? data.avtar : `https://ui-avatars.com/api/?name=${data.username}&background=random&color=fff&rounded=true`} alt="" className="h-8 " />
+                <img
+                  src={
+                    data.avtar
+                      ? data.avtar
+                      : `https://ui-avatars.com/api/?name=${data.username}&background=random&color=fff&rounded=true`
+                  }
+                  alt=""
+                  className="h-8 "
+                />
                 <h1
                   className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
                 >
@@ -206,42 +203,40 @@ const Sidebar = ({
 
           {/* Friend Request */}
           <div>
-           <h1 className="h-10 text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
-            Pending Requests
-          </h1>
+            <h1 className="h-10 text-lg flex justify-between items-center  hover:text-white text-[#DCDDDE]">
+              Pending Requests
+            </h1>
 
-          <div className=" flex flex-col gap-2">
-            {friendRequestList.map((data, index) => (
-              <div
-                key={index}
-                className={`flex justify-between  h-10 gap-2 items-center rounded-lg px-2 ${activeChat.username === data.username ? "bg-[#A3E635]" : ""} `}
-              >
-                <div className="flex gap-2">
-
-                <img src={data.avtar} alt="t" className="h-8 rounded-full " />
-                <h1
-                  className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
-                  >
-                  {data.username}
-                </h1>
+            <div className=" flex flex-col gap-2">
+              {friendRequestList.map((data, index) => (
+                <div
+                  key={index}
+                  className={`flex justify-between  h-10 gap-2 items-center rounded-lg px-2 ${activeChat?.username === data.username ? "bg-[#A3E635]" : ""} `}
+                >
+                  <div className="flex gap-2">
+                    <img
+                      src={data.avtar}
+                      alt="t"
+                      className="h-8 rounded-full "
+                    />
+                    <h1
+                      className={` col-span-2   text-xl text-[#DCDDDE] hover:text-[#8E9297]   cursor-pointer  rounded-xl  max-md:text-lg `}
+                    >
+                      {data.username}
+                    </h1>
                   </div>
-                <button className="text-white border bg-[#84CC16]  rounded-lg px-2 hover:cursor-pointer hover:bg-[#52810c]" onClick={()=>handleAcceptRequest(data.username)} >Accept</button>
-              </div>
-            ))}
+                  <button
+                    className="text-white border bg-[#84CC16]  rounded-lg px-2 hover:cursor-pointer hover:bg-[#52810c]"
+                    onClick={() => handleAcceptRequest(data.username)}
+                  >
+                    Accept
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-
-             
- 
-
-          </div>
-
-
-
-
         </div>
       </div>
-
-
     </div>
   );
 };

@@ -32,7 +32,9 @@ const FloatingUserMenu = ({user,setUser}) => {
         
     }
   return (
-    <div className="absolute left-0 bottom-0 rounded-lg  flex  w-[92%] m-2 items-center justify-between bg-[#1c1d20] px-2 py-2 gap-2">
+    <div className="absolute left-0 bottom-0 rounded-lg  flex  w-[92%] m-2 items-center justify-between bg-[#313338] px-2 py-2 gap-2
+    max-sm:w-[calc(100%-1rem)] max-sm:mx-2
+    ">
         <div className=' flex gap-2 items-center px-2 w-2/3 hover:bg-[#6B7280] rounded-lg'>
             <img src={user.avtar} className='h-10' alt="" />
             <div className='flex flex-col max-lg:hidden'>

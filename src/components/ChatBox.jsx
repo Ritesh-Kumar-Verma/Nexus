@@ -6,8 +6,8 @@ import SockJS from 'sockjs-client';
 import { chatAPI } from "../api/service";
 import Loading from "./Loading";
 
-const ChatBox = ({ currentUser, activeChat }) => {
-  const [messages, setMessages] = useState([]);
+const ChatBox = ({ currentUser, activeChat,messages,setMessages }) => {
+  
   const [messageInput, setMessageInput] = useState("");
   const stompClientRef = useRef(null);
   const [chatLoading, setChatLoading] = useState(false)
@@ -119,7 +119,7 @@ const ChatBox = ({ currentUser, activeChat }) => {
   };
 
   return (
-    <div className={`bg-[#24283B] flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
+    <div className={`apear glass-chatbox flex flex-col h-full p-2 gap-2 ${activeChat?.id ? "" : "hidden"}`}>
       {
         chatLoading && <Loading/>
       }

@@ -5,9 +5,11 @@ import Header from './Header';
 import ActiveFriends from "./ActiveFriends"
 import { authAPI, friendsAPI } from '../api/service';
 import { toast } from 'react-toastify';
+import Welcome from './Welcome';
 const Home = () => {
   const [activeChat,setActiveChat] = useState({})
   const [currentUser , setCurrentUser] = useState("")
+  const [messages, setMessages] = useState([]);
   
   const [user,setUser] = useState({
     avtar : "https://api.dicebear.com/7.x/bottts/svg?seed=Ben",
@@ -79,14 +81,15 @@ const serverList = [
 
 
   return (
-    <div className='h-screen w-full flex bg-[#24283B]'>
+    <div className='h-screen w-full flex  '>
 
       <Sidebar user={user} setUser={setUser} serverList={serverList} activeChat={activeChat} setActiveChat={setActiveChat}/>
       
       <div className={`flex flex-col  w-full ${activeChat?"":"max-sm:hidden"} `}>
 
-      <Header currentUser={currentUser} activeChat={activeChat} setActiveChat={setActiveChat}/>
-      <ChatBox currentUser={currentUser}  activeChat={activeChat} />  
+      <Header currentUser={currentUser} activeChat={activeChat} setActiveChat={setActiveChat} setMessages={setMessages}/>
+      <Welcome activeChat={activeChat} currentUser={currentUser} />
+      <ChatBox currentUser={currentUser}  activeChat={activeChat} messages={messages} setMessages={setMessages} />  
       </div>
       {/* <ActiveFriends activeChat={activeChat} /> */}
       

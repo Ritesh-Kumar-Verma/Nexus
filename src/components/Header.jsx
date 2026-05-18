@@ -1,12 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
-const Header = ({currentUser,activeChat,setActiveChat}) => {
+const Header = ({currentUser,activeChat,setActiveChat,setMessages}) => {
   const handleBack=()=>{
-    setActiveChat(prev=>{})
+    setActiveChat({})
+    setMessages([])
+
   }
   return (
-    <div className={`${activeChat?.id ? "" :"max-sm:hidden"}  flex  h-16 w-full border-b bg-[#24283B] border-[#42464D] gap-2 items-center`}>
+    <div className={`glass-header ${activeChat?.id ? "" :"hidden"}  flex  h-16 w-full  gap-2 items-center`}>
         
         {activeChat?.id && <FontAwesomeIcon icon={faAngleLeft} className={`  ml-2 text-2xl py-2 px-1 rounded-lg hover:bg-gray-600 hover:cursor-pointer`} style={{color: "#D1D5DB"}}
          onClick={handleBack}
